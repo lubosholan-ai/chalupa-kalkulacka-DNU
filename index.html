@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Kalkulačka chalupy</title>
+
+<style>
+body{
+font-family: Arial;
+background:#f4f6f8;
+padding:30px;
+max-width:700px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:center;
+}
+
+input{
+width:70px;
+padding:5px;
+text-align:center;
+}
+
+button{
+padding:10px 16px;
+border:none;
+border-radius:6px;
+background:#2f80ed;
+color:white;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#1c5fc4;
+}
+
+.controls{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:10px;
+}
+
+.total{
+font-weight:bold;
+font-size:18px;
+text-align:center;
+margin-top:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>Kalkulačka chalupy</h1>
+
+<div class="card">
+
+<label>Celková cena:</label> <input id="totalPrice" value="21000">
+
+<table id="table">
+<tr>
+<th>Jméno</th>
+<th>Nocí</th>
+<th>Celkem</th>
+<th>Záloha</th>
+</tr>
+
+<tr>
+<td><input value="Lubos"></td>
+<td><input type="number" value="3"></td>
+<td class="totalCell"></td>
+<td class="depositCell"></td>
+</tr>
+
+<tr>
+<td><input value="Miky"></td>
+<td><input type="number" value="3"></td>
+<td class="totalCell"></td>
+<td class="depositCell"></td>
+</tr>
+
+<tr>
+<td><input value="Venca"></td>
+<td><input type="number" value="3"></td>
+<td class="totalCell"></td>
+<td class="depositCell"></td>
+</tr>
+
+<tr>
+<td><input value="Pavel"></td>
+<td><input type="number" value="3"></td>
+<td class="totalCell"></td>
+<td class="depositCell"></td>
+</tr>
+
+<tr>
+<td><input value="Dominik"></td>
+<td><input type="number" value="3"></td>
+<td class="totalCell"></td>
+<td class="depositCell"></td>
+</tr>
+
+<tr>
+<td><input value="Bobek"></td>
+<td><input type="number" value="3"></td>
+<td class="totalCell"></td>
+<td class="depositCell"></td>
+</tr>
+
+<tr>
+<td><input value="Filip"></td>
+<td><input type="number" value="1"></td>
+<td class="totalCell"></td>
+<td class="depositCell"></td>
+</tr>
+
+</table>
+
+<div class="controls">
+<button onclick="addPerson()">Přidat osobu</button>
+<button onclick="copyResult()">Zkopírovat rozpis</button>
+</div>
+
+<div class="total" id="summary"></div>
+
+</div>
+
+<script>
+
+function calculate(){
+
+let price=parseFloat(document.getElementById("totalPrice").value)
+
+let rows=document.querySelectorAll("#table tr")
+let nights=[]
+
+for(let i=1;i<rows.length;i++){
+let n=parseFloat(rows[i].children[1].children[0].value)||0
+nights.push(n)
+}
+
+let totalNights=nights.reduce((a,b)=>a+b,0)
+
+let pricePerNight=price/totalNights
+
+for(let i=1;i<rows.length;i++){
+
+let n=nights[i-1]
+let total=n*pricePerNight
+let deposit=total/2
+
+rows[i].querySelector(".totalCell").innerText=Math.round(total)+" Kč"
+rows[i].querySelector(".depositCell").innerText=Math.round(deposit)+" Kč"
+
+}
+
+document.getElementById("summary").innerText=
+"Cena za osobonoc: "+Math.round(pricePerNight)+" Kč"
+
+}
+
+document.addEventListener("input",calculate)
+
+function addPerson(){
+
+let table=document.getElementById("table")
+
+let row=table.insertRow()
+
+row.innerHTML=`
+<td><input value="Nová osoba"></td>
+<td><input type="number" value="1"></td>
+<td class="totalCell"></td>
+<td class="depositCell"></td>
+`
+
+calculate()
+
+}
+
+function copyResult(){
+
+let rows=document.querySelectorAll("#table tr")
+let text="Rozpis chalupa:\n"
+
+for(let i=1;i<rows.length;i++){
+
+let name=rows[i].children[0].children[0].value
+let total=rows[i].querySelector(".totalCell").innerText
+let deposit=rows[i].querySelector(".depositCell").innerText
+
+text+=name+" – celkem "+total+" | záloha "+deposit+"\n"
+
+}
+
+navigator.clipboard.writeText(text)
+
+alert("Rozpis zkopírován")
+
+}
+
+calculate()
+
+</script>
+
+</body>
+</html>

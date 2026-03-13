@@ -140,6 +140,16 @@ margin-top:10px;
 </tr>
 
 </table>
+<h3>Zaplatit zálohu</h3>
+
+<label>Částka (Kč):</label> <input id="paymentAmount" type="number" placeholder="např. 1658">
+
+<br><br>
+
+<img id="qrCode" width="200">
+
+<p>Naskenujte QR kód ve své bankovní aplikaci.</p>
+
 
 <div class="controls">
 <button onclick="addPerson()">Přidat osobu</button>
@@ -151,6 +161,22 @@ margin-top:10px;
 </div>
 
 <script>
+function updateQR(){
+
+let amount = document.getElementById("paymentAmount").value
+
+if(!amount) return
+
+let spd = `SPD*1.0*ACC:CZ6503000000000209478056*AM:${amount}*CC:CZK*MSG:chalupa DNU`
+
+let qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(spd)
+
+document.getElementById("qrCode").src = qrUrl
+
+}
+
+document.getElementById("paymentAmount").addEventListener("input", updateQR)
+
 
 function calculate(){
 
@@ -230,3 +256,4 @@ calculate()
 
 </body>
 </html>
+
